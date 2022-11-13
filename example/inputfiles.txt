@@ -1,0 +1,3 @@
+/nfs/dust/cms/user/flabe/B2G_Trigger_contact/data/NanoAOD/testdata1.root
+/nfs/dust/cms/user/flabe/B2G_Trigger_contact/data/NanoAOD/testdata2.root
+/nfs/dust/cms/user/flabe/B2G_Trigger_contact/data/NanoAOD/testdata3.root

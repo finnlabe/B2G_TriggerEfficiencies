@@ -1,0 +1,19 @@
+executable              = condor.sh
+arguments               = filelist_$(Process).txt reftriggers.txt testtriggers.txt 22RunC $(Process)
+
+output                  = log/B2G_triggereff.$(Process).out
+error                   = log/B2G_triggereff.$(Process).err
+log                     = log/B2G_triggereff.log
+
++JobFlavour             = "longlunch"
+use_x509userproxy	    = true
+x509userproxy           = /afs/cern.ch/user/f/flabe/x509up_u103872
+
+transfer_input_files    = runtriggerEfficiencies.py, jobsetup_example/inputFiles/filelist_$(Process).txt, jobsetup_example/reftriggers.txt, jobsetup_example/testtriggers.txt
+transfer_output_files   = outputpart_$(Process).root
+should_transfer_files   = YES
+when_to_transfer_output = ON_EXIT
+
+# submit X instances of this job
+# with the splitting scheme we are using, we have
+queue X

@@ -144,8 +144,10 @@ def run_multiple_files(inputfiles, refTriggers, testTriggers, goldenJSON=None, J
                                      testTriggers,
                                      goldenJSON,
                                      JECcorrectionpath)
-        all_values.append(values)
-        all_masks.append(masks)
+              
+        if names: # in case individual file failed, skip
+            all_values.append(values)
+            all_masks.append(masks)
         
         
     print("Done processing all files. Combining outputs.")

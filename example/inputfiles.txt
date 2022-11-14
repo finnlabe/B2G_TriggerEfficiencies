@@ -1,3 +1,3 @@
-/nfs/dust/cms/user/flabe/B2G_Trigger_contact/data/NanoAOD/testdata1.root
-/nfs/dust/cms/user/flabe/B2G_Trigger_contact/data/NanoAOD/testdata2.root
-/nfs/dust/cms/user/flabe/B2G_Trigger_contact/data/NanoAOD/testdata3.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10-v1/2520000/babb9173-53e2-426f-b3d1-f47b0f2f7a60.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10-v1/40000/0a409959-5934-4df3-b815-59ea8099604e.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10-v1/40000/0b8b052c-76b4-4e36-b0ff-50eff063fe2c.root

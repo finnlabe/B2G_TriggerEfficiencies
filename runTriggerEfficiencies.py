@@ -95,10 +95,11 @@ with uproot.recreate("output.root") as fout:
     for name, binning, value in zip(names, binnings, values):
 
         # create histogram and store it to a file
-        fout[name + "__before"] = np.histogram(value, bins = binning[0], range = binning[1])
+        np.histogram(value.to_numpy(), bins = binning[0], range = binning[1])
+        fout[name + "__before"] = np.histogram(value.to_numpy(), bins = binning[0], range = binning[1])
 
         # apply trigger masks and create second histogram
         for trigger in masks:
-            fout[name + "__" + trigger] = np.histogram(value[masks[trigger]], bins = binning[0], range = binning[1])
+            fout[name + "__" + trigger] = np.histogram(value[masks[trigger]].to_numpy(), bins = binning[0], range = binning[1])
     
 

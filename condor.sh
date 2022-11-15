@@ -17,10 +17,10 @@ if [ "$#" -eq "5" ]
 
         echo "Condor job done, transferring outout..."
         
-        # TODO rename all output files here
-        for file in *.npy; do 
-            mv -- "$file" "${file%.npy}_$5.npy"
-        done
+        # renaming output file according to job ID
+        mv "output.root" "output_$5.root"
+        
+        # the transfer back will be done automatically by condor!
 
     else
         echo "Please give exactly five arguments!"

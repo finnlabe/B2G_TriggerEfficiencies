@@ -10,7 +10,7 @@ use_x509userproxy	    = true
 x509userproxy           = /afs/cern.ch/user/f/flabe/x509up_u103872
 
 transfer_input_files    = runtriggerEfficiencies.py, jobsetup_example/inputFiles/filelist_$(Process).txt, jobsetup_example/reftriggers.txt, jobsetup_example/testtriggers.txt
-transfer_output_files   = outputpart_$(Process).root
+transfer_output_files   = output_$(Process).root
 should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT
 

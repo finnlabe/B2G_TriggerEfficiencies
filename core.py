@@ -122,10 +122,19 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     #####################
     
     names = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
+    
+    binning = [
+        [60, (0, 1500)],
+        [40, (-4, 4)],
+        [60, (0, 600)],
+        [60, (0, 3000)],
+    ]
+    
     values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT]
     
+    
     # we'll just output data so histogramming and efficiency calculation can be made offline
-    return names, values, trigger_masks
+    return names, binning, values, trigger_masks
     
 # running on multiple input files and combining the output
 def run_multiple_files(inputfiles, refTriggers, testTriggers, goldenJSON=None, JECcorrectionpath=None):
@@ -139,7 +148,7 @@ def run_multiple_files(inputfiles, refTriggers, testTriggers, goldenJSON=None, J
         print("Starting to process " + inputfile + ".")
         
         # getting the results of one job
-        names, values, masks = run_one_file(inputfile,
+        names, binnings, values, masks = run_one_file(inputfile,
                                      refTriggers,
                                      testTriggers,
                                      goldenJSON,
@@ -177,4 +186,4 @@ def run_multiple_files(inputfiles, refTriggers, testTriggers, goldenJSON=None, J
         total_temp_values = ak.concatenate(temp_masks, axis=0)
         final_masks[trigger] = total_temp_values
                 
-    return names, final_values, final_masks
+    return names, binnings, final_values, final_masks

@@ -1,6 +1,7 @@
 import coffea
 import awkward as ak
 import numpy as np
+import uproot
 from coffea.nanoevents import NanoEventsFactory, NanoAODSchema
 from coffea.lumi_tools import LumiMask
 from coffea.lookup_tools import extractor
@@ -38,6 +39,8 @@ parser.add_argument('-e', '--era', required=True)
 parser.add_argument('--doJECs', action='store_true')
 parser.add_argument('--useGoldenJSON', action='store_true')
 
+parser.add_argument('--storeVariables', action='store_true')
+
 args = parser.parse_args()
 
 # fetch input files
@@ -60,20 +63,42 @@ else:
     goldenJSON = None
 
 # run the core part of the core for multiple files
-names, values, masks = run_multiple_files(inputfiles,
-                       refTriggers,
-                       testTriggers,
-                       goldenJSON,
-                       JECcorrectionpath)
+names, binnings, values, masks = run_multiple_files(inputfiles,
+                                                    refTriggers,
+                                                    testTriggers,
+                                                    goldenJSON,
+                                                    JECcorrectionpath)
 
-# outputting the results
-for name, value in zip(names, values):
+
+# potentially outputting the results
+if(args.storeVariables):
+    for name, value in zip(names, values):
+
+        with open(name.replace(" ", "__") + '.npy', 'wb') as f:
+            np.save(f, np.asarray(value.to_numpy()))
+
+    for name in masks:
+        mask = masks[name]
+
+        with open(name + '.npy', 'wb') as f:
+            np.save(f, np.asarray(mask.to_numpy()))
+            
+
+# creating histograms
+# we'll do histograms for two versions: only the cuts applied in the selection above, and an additional m(SD) cut
+# we won't create efficiencies here as these need to be created for all jobs combined
+# binning areset to some fixed value, defined within the core function
+
+# create and open root file
+with uproot.recreate("output.root") as fout:
+
+    for name, binning, value in zip(names, binnings, values):
+
+        # create histogram and store it to a file
+        fout[name + "__before"] = np.histogram(value, bins = binning[0], range = binning[1])
+
+        # apply trigger masks and create second histogram
+        for trigger in masks:
+            fout[name + "__" + trigger] = np.histogram(value[masks[trigger]], bins = binning[0], range = binning[1])
     
-    with open(name.replace(" ", "__") + '.npy', 'wb') as f:
-        np.save(f, np.asarray(value.to_numpy()))
-        
-for name in masks:
-    mask = masks[name]
-    
-    with open(name + '.npy', 'wb') as f:
-        np.save(f, np.asarray(mask.to_numpy()))
+

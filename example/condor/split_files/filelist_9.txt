@@ -1,0 +1,17 @@
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/af321edd-048b-419e-a2be-fab6290db592.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/01f71204-84a0-46e9-8ba2-aa6005104089.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/62440ef2-9e85-4c27-9883-5334b6cc6a00.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/b5c0f474-f873-4ed8-8c7b-a061f4f7822c.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/5582331e-8f2b-4dd8-a503-9ca33f07c566.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/5cbfcc48-1464-472b-9b0e-d9f6f5ff713e.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/54148733-5bc2-4bf7-9298-1df3be327592.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/97f50250-d101-43a9-bbcd-b70f7110f456.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/3ede8721-a3d7-4b72-b9a9-449d55933536.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/eef66769-98c3-4420-aba0-3fb6a7c1b2fc.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/99d6b980-cca4-4226-b1b1-f86fb910d2f9.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/28a2b288-3ff3-4f53-8969-777626c3c7d2.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/fb679dd8-2079-4081-8d3b-2f4b4c316ada.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/90f28881-de34-4011-a114-e0ad77d4e8e7.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/e123d181-8ccb-44aa-a768-ceafbf925c64.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/83685e3c-67ae-4fcf-a0ce-bb1bb51137d0.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/dd979138-d274-464b-b8a9-26e48233414d.root

@@ -1,0 +1,7 @@
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/50000/ba2c2fc7-7b46-46c4-bdcc-a5d52c5493ec.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/50000/85d14206-79a4-4aa7-84d7-635c859b4413.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/2262a4fa-d64d-46c0-9c35-d45b5b749aef.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/48d5f065-56da-49c9-b7ad-d433aa919b3f.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/76ff2e3d-8191-4ab4-af7a-364eb28fbf64.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/bf3fe5f9-297e-487c-b659-79c2a94402b8.root
+root://xrootd-cms.infn.it//store/data/Run2022C/Muon/NANOAOD/PromptNanoAODv10_v1-v1/2530000/9b9a449c-4a40-487a-af30-7ad3700d739f.root

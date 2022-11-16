@@ -10,10 +10,13 @@ if [ "$#" -eq "5" ]
         echo "Era is: $4"
         echo "Job ID for naming: $5"
 
-        # we should have all files copied to the work server using the condor submit script
-        echo "Starting the root script"
+	# activating the environment
+	echo "Activating the environment..."
+	source /cvmfs/sft-nightlies.cern.ch/lcg/views/dev3/latest/x86_64-centos7-gcc11-opt/setup.sh
 
-        python runTriggerEfficiencies.py -i $1 -r $2 -t $3 -e $4
+        # we should have all files copied to the work server using the condor submit script
+        echo "Starting the python script"
+        python runTriggerEfficiencies.py -i $1 -r $2 -t $3 -e $4 --doJECs --useGoldenJSON
 
         echo "Condor job done, transferring outout..."
         

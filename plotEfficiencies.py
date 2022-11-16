@@ -1,3 +1,8 @@
+import sys
+
+if not len(sys.argv) == 2:
+    raise Exception("Please specify exactly one argument: the root file to run plotting on.")
+
 import numpy as np
 import uproot
 from scipy.stats import beta
@@ -46,7 +51,7 @@ def plotEfficiency(hist_before, hist_after, label=None, ax=None):
     
     hep.histplot(efficiency, hist_bins, yerr=error.T, label=label, ax=ax)
 
-with uproot.open("output_total.root") as f_in:
+with uproot.open(str(sys.argv[1])) as f_in:
 
     # first, lets do control plot of "before" and "after" histograms
     for variable in variables:

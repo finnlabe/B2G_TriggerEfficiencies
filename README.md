@@ -47,7 +47,7 @@ Two additional, optional flags can be set:
 - --useGoldenJSON: apply a goldenJSON selection
 
 A complete example command thus could be
-`python runTriggerEfficiencies.py -i example/inputfiles.txt -r example/refTriggers.txt -t example/testTriggers.txt -e 22RunD --doJECs --useGoldenJSON`
+`python runTriggerEfficiencies.py -i example/local/inputfiles.txt -r example/local/refTriggers.txt -t example/local/testTriggers.txt -e 22RunD --doJECs --useGoldenJSON`
 
 The output, called `output.root` , can then be plotted by using
 

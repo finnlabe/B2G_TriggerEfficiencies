@@ -17,12 +17,29 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     #########################
     ####  Event reading  ####
     #########################
-    
-    events = NanoEventsFactory.from_root(
-        inputfile,
-        schemaclass=NanoAODSchema,
-    ).events()
-    
+
+    if "xrootd-cms.infn.it" in inputfile: print("Attention: as xrootd-cms.infn.it was very unstable, cmsxrootd.fnal.gov will be used instead")
+
+
+    try:
+        events = NanoEventsFactory.from_root(
+            inputfile.replace("xrootd-cms.infn.it", "cmsxrootd.fnal.gov"),
+            schemaclass=NanoAODSchema,
+        ).events()
+    except OSError as error:
+        print(error)
+        print("Trying with local copy")
+        os.system('xrdcp "'+inputfile.replace("xrootd-cms.infn.it", "cmsxrootd.fnal.gov")+'" input.root')
+        try:
+            events = NanoEventsFactory.from_root(
+                "input.root",
+                schemaclass=NanoAODSchema,
+            ).events()
+        except OSError as error:
+            print(error)
+            os.system("rm input.root")
+            return False, False, False, False
+        os.system("rm input.root")
     
     #######################
     ####  golden JSON  ####

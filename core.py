@@ -13,20 +13,24 @@ from helpers import *
 # main function running on a single input file
 def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorrectionpath=None):
 
-    
     #########################
     ####  Event reading  ####
     #########################
 
+    # as xrootd connections are often rather unstable, there are several different tricks here to try and address that
+
+    # the european redirector often is super unstable, therefore the US one is used instead
+    # ideally, we'll try both, but that is an optimization for later
     if "xrootd-cms.infn.it" in inputfile: print("Attention: as xrootd-cms.infn.it was very unstable, cmsxrootd.fnal.gov will be used instead")
 
-
     try:
+        # first, lets try to stream the file
         events = NanoEventsFactory.from_root(
             inputfile.replace("xrootd-cms.infn.it", "cmsxrootd.fnal.gov"),
             schemaclass=NanoAODSchema,
         ).events()
     except OSError as error:
+        # if streaming is not working, try copying over the entire file
         print(error)
         print("Trying with local copy")
         os.system('xrdcp "'+inputfile.replace("xrootd-cms.infn.it", "cmsxrootd.fnal.gov")+'" input.root')
@@ -36,10 +40,12 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
                 schemaclass=NanoAODSchema,
             ).events()
         except OSError as error:
+            # if that is also not working, just ignore the file
             print(error)
             os.system("rm input.root")
             return False, False, False, False
         os.system("rm input.root")
+
     
     #######################
     ####  golden JSON  ####

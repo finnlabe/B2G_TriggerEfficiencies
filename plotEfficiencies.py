@@ -14,6 +14,7 @@ plt.style.use(hep.style.ROOT)
 # suppressing error from division of 0 by 0 (is handled in code)
 np.seterr(invalid='ignore')
 
+prefixes = ["", "mSD35__"]
 variables = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
 triggers = ["AK8PFJet400_MassSD30", "AK8PFJet400_TrimMass30"]
 
@@ -54,30 +55,32 @@ def plotEfficiency(hist_before, hist_after, label=None, ax=None):
 with uproot.open(str(sys.argv[1])) as f_in:
 
     # first, lets do control plot of "before" and "after" histograms
-    for variable in variables:
+    for prefix in prefixes:
+        for variable in variables:
 
-        fig, ax = plt.subplots()
+            fig, ax = plt.subplots()
 
-        plotHistogram(f_in[variable + "__before"], label="before", ax=ax)
+            plotHistogram(f_in[prefix + variable.replace(" ", "_") + "__before"], label="before", ax=ax)
 
-        for trigger in triggers: plotHistogram(f_in[variable + "__" + trigger], label = trigger, ax=ax)
-        
-        plt.yscale("log")
-        plt.ylabel("events")
-        plt.xlabel(variable)
-        plt.legend()
-        
-        fig.savefig("hist__" + variable.replace(" ", "_") + ".png", format="png")
+            for trigger in triggers: plotHistogram(f_in[prefix + variable.replace(" ", "_") + "__" + trigger], label = trigger, ax=ax)
+            
+            plt.yscale("log")
+            plt.ylabel("events")
+            plt.xlabel(variable)
+            plt.legend()
+            
+            fig.savefig("hist__" + prefix + variable.replace(" ", "_") + ".png", format="png")
 
     # next, lets do the efficiencies
-    for variable in variables:
+    for prefix in prefixes:
+        for variable in variables:
 
-        fig, ax = plt.subplots()
+            fig, ax = plt.subplots()
 
-        for trigger in triggers: plotEfficiency(f_in[variable + "__before"], f_in[variable + "__" + trigger], label=trigger, ax=ax)
+            for trigger in triggers: plotEfficiency(f_in[prefix + variable.replace(" ", "_") + "__before"], f_in[prefix + variable.replace(" ", "_") + "__" + trigger], label=trigger, ax=ax)
 
-        plt.ylabel("efficiency")
-        plt.xlabel(variable)
-        plt.legend()
+            plt.ylabel("efficiency")
+            plt.xlabel(variable)
+            plt.legend()
 
-        fig.savefig("effi__" + variable.replace(" ", "_") + ".png", format="png")
+            fig.savefig("effi__" + prefix + variable.replace(" ", "_") + ".png", format="png")

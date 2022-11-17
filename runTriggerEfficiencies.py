@@ -95,11 +95,33 @@ with uproot.recreate("output.root") as fout:
     for name, binning, value in zip(names, binnings, values):
 
         # create histogram and store it to a file
-        np.histogram(value.to_numpy(), bins = binning[0], range = binning[1])
-        fout[name + "__before"] = np.histogram(value.to_numpy(), bins = binning[0], range = binning[1])
+        fout[name.replace(" ", "_") + "__before"] = np.histogram(value.to_numpy(), bins = binning[0], range = binning[1])
 
         # apply trigger masks and create second histogram
         for trigger in masks:
-            fout[name + "__" + trigger] = np.histogram(value[masks[trigger]].to_numpy(), bins = binning[0], range = binning[1])
+            fout[name.replace(" ", "_") + "__" + trigger] = np.histogram(value[masks[trigger]].to_numpy(), bins = binning[0], range = binning[1])
     
+
+    # now lets do the same for the mSD > 35 situation
+    try: 
+        mSD_index = names.index("leading AK8 mSD")
+        mSD_mask = (values[mSD_index] > 35).to_numpy()
+        for name, binning, value in zip(names, binnings, values):
+
+            # create histogram and store it to a file
+            fout["mSD35__" + name.replace(" ", "_") + "__before"] = np.histogram(value.to_numpy()[mSD_mask], bins = binning[0], range = binning[1])
+
+            # apply trigger masks and create second histogram
+            for trigger in masks:
+                # now we need to combine this mask and the trigger mask
+                trigger_mask = masks[trigger].to_numpy()
+                
+                total_mask = np.concatenate((mSD_mask.reshape(mSD_mask.shape[0],1), trigger_mask.reshape(mSD_mask.shape[0],1)), axis=1)
+                total_mask = np.all(total_mask, axis=1)
+
+                fout["mSD35__" + name.replace(" ", "_") + "__" + trigger] = np.histogram(value.to_numpy()[total_mask], bins = binning[0], range = binning[1])
+    except ValueError as error:
+        print(error)
+        print("Not doing mSD > 35 plots, as no mSD variable found.")
+        
 

@@ -13,7 +13,8 @@ np.seterr(invalid='ignore')
 
 prefixes = ["", "mSD35__"]
 variables = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
-trigger = "AK8PFJet400_TrimMass30"
+#trigger = "AK8PFJet420_TrimMass30"
+trigger = "AK8PFJet420_MassSD30"
 
 # needed for error bars on efficiencies
 def binom_int(num, den, confint=0.68):
@@ -61,10 +62,18 @@ for prefix in prefixes:
             if ".py" in file: continue
             with uproot.open(file) as f_in:
 
-                plotEfficiency(f_in[prefix + variable.replace(" ", "_") + "__before"], f_in[prefix + variable.replace(" ", "_") + "__" + trigger], label=file.replace("output_","").replace(".root",""), ax=ax)
+                label = file.replace("output_","").replace(".root","")
+                path_parts = len(label.split("/"))
+                if( path_parts > 1 ): label = label.split("/")[path_parts-1]
+                plotEfficiency(f_in[prefix + variable.replace(" ", "_") + "__before"], f_in[prefix + variable.replace(" ", "_") + "__" + trigger], label=label, ax=ax)
 
                 plt.ylabel("efficiency")
                 plt.xlabel(variable)
                 plt.legend()
+
+                # add some text explaining the cuts
+                text_in_plot = r"$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
+                if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
+                plt.text(ax.get_xlim()[1]*0.45, 0.2, text_in_plot, fontsize=18)
 
                 fig.savefig(trigger + "__effi__" + prefix + variable.replace(" ", "_") + ".png", format="png")

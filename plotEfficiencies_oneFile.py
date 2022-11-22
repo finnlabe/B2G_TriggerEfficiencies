@@ -16,7 +16,7 @@ np.seterr(invalid='ignore')
 
 prefixes = ["", "mSD35__"]
 variables = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
-triggers = ["AK8PFJet500"]
+triggers = ["AK8PFJet500", "AK8PFJet420_MassSD30", "AK8PFJet420_TrimMass30", "PFHT1050"]
 
 # needed for error bars on efficiencies
 def binom_int(num, den, confint=0.68):
@@ -68,6 +68,11 @@ with uproot.open(str(sys.argv[1])) as f_in:
             plt.ylabel("events")
             plt.xlabel(variable)
             plt.legend()
+
+            # add some text explaining the cuts
+            text_in_plot = r"$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
+            if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
+            plt.text(ax.get_xlim()[1]*0.45, 0.5, text_in_plot, fontsize=18)
             
             fig.savefig("hist__" + prefix + variable.replace(" ", "_") + ".png", format="png")
 
@@ -83,4 +88,12 @@ with uproot.open(str(sys.argv[1])) as f_in:
             plt.xlabel(variable)
             plt.legend()
 
-            fig.savefig(str(sys.argv[1]).replace("output_","").replace(".root","") + "__effi__" + prefix + variable.replace(" ", "_") + ".png", format="png")
+            # add some text explaining the cuts
+            text_in_plot = r"$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
+            if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
+            plt.text(ax.get_xlim()[1]*0.45, 0.5, text_in_plot, fontsize=18)
+
+            outlabel = str(sys.argv[1]).replace("output_","").replace(".root","")
+            path_parts = len(outlabel.split("/"))
+            if( path_parts > 1 ): outlabel = outlabel.split("/")[path_parts-1]
+            fig.savefig(outlabel + "__effi__" + prefix + variable.replace(" ", "_") + ".png", format="png")

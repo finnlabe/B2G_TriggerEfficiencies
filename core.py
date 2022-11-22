@@ -46,7 +46,7 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
             return False, False, False, False
         os.system("rm input.root")
 
-    
+
     #######################
     ####  golden JSON  ####
     #######################
@@ -57,7 +57,6 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
 
         events = events[applied_lumiMask]
     
-
     ################
     ####  JECs  ####
     ################
@@ -87,18 +86,24 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
         # overwrite previous jet collection with corrected ones
         events.FatJet = corrected_FatJets
 
-    
     #########################
     ####  Ref. triggers  ####
     #########################
+
+    cleanedRefTriggers = []
+    for trigger in refTriggers:
+        if trigger in events.HLT.fields: cleanedRefTriggers.append(trigger)
+        else: print("Not using " + trigger + " as its not available in the sample")
+    if (len(cleanedRefTriggers) == 0):
+        return False, False, False, False
+        raise Exception("No valid ref triggers found, skipping this file!")
     
     # getting the trigger masks and taking OR
-    ref_masks = np.asarray( [events.HLT[trigger].to_numpy() for trigger in refTriggers] )
+    ref_masks = np.asarray( [events.HLT[trigger].to_numpy() for trigger in cleanedRefTriggers] )
     ref_mask = np.any(ref_masks, axis=0)
     
     # applying ref trigger mask
     events = events[ref_mask]
-    
     
     #####################
     ####  Selection  ####
@@ -118,12 +123,17 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     # applying the selection
     events = events[selection_mask]
     
-    
     #########################
     ####  Test triggers  ####
     #########################
+
+    cleanedTestTriggers = []
+    for trigger in testTriggers:
+        if trigger in events.HLT.fields: cleanedTestTriggers.append(trigger)
+        else: print("Not using " + trigger + " as its not available in the sample")
+    if (len(cleanedTestTriggers) == 0): raise Exception("No valid ref triggers found!")
     
-    trigger_masks_bits = [ events.HLT[trigger].to_numpy() for trigger in testTriggers ]
+    trigger_masks_bits = [ events.HLT[trigger].to_numpy() for trigger in cleanedTestTriggers ]
     trigger_masks = dict( zip(testTriggers, trigger_masks_bits) )
     
     
@@ -155,7 +165,7 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     
     values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT]
     
-    
+
     # we'll just output data so histogramming and efficiency calculation can be made offline
     return names, binning, values, trigger_masks
     
@@ -179,9 +189,17 @@ def run_multiple_files(inputfiles, refTriggers, testTriggers, goldenJSON=None, J
               
         if names: # in case individual file failed, skip
             all_values.append(values)
-            all_masks.append(masks)
-        
-        
+            all_masks.append(masks)        
+            safety_names = names # in case the last is broken, we want to use the one before that
+            safety_binnings = binnings
+
+    if(len(all_values) == 0): raise Exception("No file in this job yielded any results")
+
+    # fix issue if last return was "false", but others were fine
+    if not names:
+        names = safety_names
+        binnings = safety_binnings
+
     print("Done processing all files. Combining outputs.")
         
     # now, lets concatenate all returns together

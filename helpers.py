@@ -68,6 +68,10 @@ def getGoldenJSON(era, force = False):
     
     # at the moment there is just one golden JSON file
     # if at some point this should be split, that can be added here
-    
-    return "data/goldenJSON/Cert_Collisions2022_355100_357101_Golden.json"
+    if "22" in era:
+        return "data/goldenJSON/Cert_Collisions2022_355100_361580_Golden.json"
+    elif "18" in era:
+        return "data/goldenJSON/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt"
+    else:
+        raise Exception("Era " + era + " not recognized to get golden JSON")
 

@@ -1,8 +1,5 @@
 import sys
 
-if not len(sys.argv) == 2:
-    raise Exception("Please specify exactly one argument: the root file to run plotting on.")
-
 import numpy as np
 import uproot
 from scipy.stats import beta
@@ -16,7 +13,7 @@ np.seterr(invalid='ignore')
 
 prefixes = ["", "mSD35__"]
 variables = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
-triggers = ["AK8PFJet400_MassSD30", "AK8PFJet400_TrimMass30"]
+trigger = "AK8PFJet400_TrimMass30"
 
 # needed for error bars on efficiencies
 def binom_int(num, den, confint=0.68):
@@ -52,35 +49,22 @@ def plotEfficiency(hist_before, hist_after, label=None, ax=None):
     
     hep.histplot(efficiency, hist_bins, yerr=error.T, label=label, ax=ax)
 
-with uproot.open(str(sys.argv[1])) as f_in:
+for prefix in prefixes:
+    for variable in variables:
 
-    # first, lets do control plot of "before" and "after" histograms
-    for prefix in prefixes:
-        for variable in variables:
+        fig, ax = plt.subplots()
 
-            fig, ax = plt.subplots()
+        for fileo in sys.argv:
 
-            plotHistogram(f_in[prefix + variable.replace(" ", "_") + "__before"], label="before", ax=ax)
+            file = str(fileo)
 
-            for trigger in triggers: plotHistogram(f_in[prefix + variable.replace(" ", "_") + "__" + trigger], label = trigger, ax=ax)
-            
-            plt.yscale("log")
-            plt.ylabel("events")
-            plt.xlabel(variable)
-            plt.legend()
-            
-            fig.savefig("hist__" + prefix + variable.replace(" ", "_") + ".png", format="png")
+            if ".py" in file: continue
+            with uproot.open(file) as f_in:
 
-    # next, lets do the efficiencies
-    for prefix in prefixes:
-        for variable in variables:
+                plotEfficiency(f_in[prefix + variable.replace(" ", "_") + "__before"], f_in[prefix + variable.replace(" ", "_") + "__" + trigger], label=file.replace("output_","").replace(".root",""), ax=ax)
 
-            fig, ax = plt.subplots()
+                plt.ylabel("efficiency")
+                plt.xlabel(variable)
+                plt.legend()
 
-            for trigger in triggers: plotEfficiency(f_in[prefix + variable.replace(" ", "_") + "__before"], f_in[prefix + variable.replace(" ", "_") + "__" + trigger], label=trigger, ax=ax)
-
-            plt.ylabel("efficiency")
-            plt.xlabel(variable)
-            plt.legend()
-
-            fig.savefig("effi__" + prefix + variable.replace(" ", "_") + ".png", format="png")
+                fig.savefig(trigger + "__effi__" + prefix + variable.replace(" ", "_") + ".png", format="png")

@@ -21,6 +21,7 @@ if [ "$#" -eq "6" ]
             python runTriggerEfficiencies.py -i $1 -r $2 -t $3 -e $4
         else
             python runTriggerEfficiencies.py -i $1 -r $2 -t $3 -e $4 $6
+        fi
 
         echo "Condor job done, transferring outout..."
         

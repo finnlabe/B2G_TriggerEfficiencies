@@ -157,12 +157,12 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     names = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
     
     binning = [
-        [60, (0, 1500)],
-        [40, (-4, 4)],
-        [60, (0, 600)],
-        [60, (0, 3000)],
+        [edge for edge in np.arange(0, 1000, 25)] + [edge for edge in np.arange(1000, 1500, 100)],
+        [edge for edge in np.arange(-4, 4, 0.25)],
+        [edge for edge in np.arange(0, 600, 25)],
+        [edge for edge in np.arange(0, 3000, 100)],
     ]
-    
+
     values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT]
     
 

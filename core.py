@@ -96,7 +96,6 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
         else: print("Not using " + trigger + " as its not available in the sample")
     if (len(cleanedRefTriggers) == 0):
         return False, False, False, False
-        raise Exception("No valid ref triggers found, skipping this file!")
     
     # getting the trigger masks and taking OR
     ref_masks = np.asarray( [events.HLT[trigger].to_numpy() for trigger in cleanedRefTriggers] )
@@ -104,21 +103,39 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     
     # applying ref trigger mask
     events = events[ref_mask]
+
+    ###############################
+    ####  Collection cleaning  ####
+    ###############################
+
+    #Muon_mask = ak.all(  ak.concatenate((events.Muon.pt > 30, events.Muon.tightId), axis=1) , axis=1, keepdims=True)
+    #selected_Muons = events.Muon[ Muon_mask ]
+    #events.Muon = selected_Muons
+
+    # jet ID selection
+    FatJet_mask = events.FatJet.isTightLeptonVeto
+    selected_FatJets = events.FatJet[ FatJet_mask ]
+    events.FatJet = selected_FatJets
+
     
     #####################
     ####  Selection  ####
     #####################
     
-    # calculate some variables for training
+    # calculate some variables for cuts
     leading_AK8_pt = ak.pad_none( events.FatJet.pt, 1, axis=1)[:,0]
     leading_AK8_eta = ak.pad_none( events.FatJet.eta, 1, axis=1)[:,0]
     
     # leading jet is required to have > 200 GeV and abs(eta) < 2.4
     jet_cut_pt_mask = ( ak.fill_none(leading_AK8_pt, -1) > 200 ).to_numpy()
-    jet_cut_eta_mask = ( abs( ak.fill_none(leading_AK8_eta, 99999) ) < 2.4 ).to_numpy()
+    jet_cut_eta_mask = ( abs( ak.fill_none(leading_AK8_eta, 99999) ) < 1.44 ).to_numpy()
+
+    # we need muon variables to ensure a muon cut > 30 GeV
+    leading_mu_pt = ak.pad_none( events.Muon.pt, 1, axis=1)[:,0]
+    muon_cut_pt_mask = ( ak.fill_none(leading_mu_pt, -1) > 30 ).to_numpy()
     
     # combining all cut masks
-    selection_mask = np.logical_and(jet_cut_pt_mask, jet_cut_eta_mask)
+    selection_mask = np.logical_and.reduce((jet_cut_pt_mask, jet_cut_eta_mask, muon_cut_pt_mask))
     
     # applying the selection
     events = events[selection_mask]
@@ -157,7 +174,7 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     names = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
     
     binning = [
-        [edge for edge in np.arange(0, 1000, 25)] + [edge for edge in np.arange(1000, 1500, 100)],
+        [edge for edge in np.arange(0, 700, 25)] + [edge for edge in np.arange(700, 1000, 100)] + [edge for edge in np.arange(1000, 1750, 250)],
         [edge for edge in np.arange(-4, 4, 0.25)],
         [edge for edge in np.arange(0, 600, 25)],
         [edge for edge in np.arange(0, 3000, 100)],

@@ -1,4 +1,5 @@
 
+
 # B2G_TriggerEfficiencies
 
 This repository contains the code to calculate trigger efficiencies that is used by the B2G trigger contacts.
@@ -78,9 +79,20 @@ When the jobs have run through, you'll have several files named `output_*.root` 
 
 `hadd output_total.root output_*.root`.
 
-Then, you can run before/after histograms, as well as efficiency plots, using
+### Plotting
+To plot the results of the efficiency calculation code, the `plotting.py` script can be used. This expects several input parameters:
 
-`python plotEfficiencies.py output_total.root`
+ - -i or --input: the root file(s) to use for plotting
+ - -o or --options: the plotting option(s), see below for more details
+ - -t or --triggers: the trigger path(s) to create plots for
+ - -v or --variables: the variable(s) to plot
+
+Each of these parameters can be any number of strings / files. The behavior of the plotting script is mainly steered by the option passed, where two options exist (of which at least one needs to be given):
+
+- oneTrigger: each plot will contain results for a single trigger, but multiple input files. Useful to compare years / run eras.
+- oneFile: each plot will contain one file, but multiple triggers. Useful to compare triggers within an era / year.
+
+Additional options can also be passed as strings following the -o flag. At the moment, only one is implemented: `mSD35` created plots with the SD mass cut at 35 applied. Further options might be added here later.
 
 ## Corrections / goldenJSON
 Jet energy corrections are applied according to the files in the `data` directory, based on the files obtained from the [JERC group recommendations](https://cms-jerc.web.cern.ch/Recommendations/). In case new ones need to be added, these can be added to the `data/corrections` directory. There, a helper script ([ConvertCorrectionFiles.py](https://github.com/finnlabe/B2G_TriggerEfficiencies/blob/master/data/corrections/ConvertCorrectionFiles.py "ConvertCorrectionFiles.py")) is given to obtain the correct file naming.

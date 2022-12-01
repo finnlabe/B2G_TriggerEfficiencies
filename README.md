@@ -50,10 +50,6 @@ Two additional, optional flags can be set:
 A complete example command thus could be
 `python runTriggerEfficiencies.py -i example/local/inputfiles.txt -r example/local/refTriggers.txt -t example/local/testTriggers.txt -e 22RunD --doJECs --useGoldenJSON`
 
-The output, called `output.root` , can then be plotted by using
-
-`python plotEfficiencies.py output.root`
-
 ### Condor
 
 To run the trigger efficiencies on more files, the HTCondor batch system is used. Example scripts are given in the repository, and an exemplary workflow is shown here. Note that this is written to work on CERN lxplus, and might require changes to run on other systems.

@@ -62,6 +62,8 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     ################
     
     if JECcorrectionpath:
+        print("Doing JECs...")
+
         # getting list of corrections from appropriate folder
         corrections_list = make_corrections_list(JECcorrectionpath)
 
@@ -77,14 +79,19 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
         jet_factory  = CorrectedJetsFactory(get_jec_name_map(), jec_stack)
         events_cache = events.caches[0]
 
+        # rho is stored differently for run 2 and run 3
+        if ("22" in JECcorrectionpath): rhos = events.Rho.fixedGridRhoFastjetAll
+        elif ("18" in JECcorrectionpath): rhos = events.fixedGridRhoFastjetAll
+
         # get corrected jets
         corrected_FatJets = jet_factory.build(add_jec_variables(events.FatJet,
-                                                                events.Rho.fixedGridRhoFastjetAll,
+                                                                rhos,
                                                                 True),
                                               events_cache)
 
         # overwrite previous jet collection with corrected ones
         events.FatJet = corrected_FatJets
+
 
     #########################
     ####  Ref. triggers  ####

@@ -53,12 +53,14 @@ with open(args.testTriggers) as file: testTriggers = [line.rstrip() for line in 
 # fetching of correct JEC folder
 if args.doJECs:
     JECcorrectionpath = getJECcorrectionpath(args.era)
+    print("Using JECs at" + JECcorrectionpath)
 else:
     JECcorrectionpath = None
 
 # fetching of correct golden JSON file
 if args.useGoldenJSON:
     goldenJSON = getGoldenJSON(args.era)
+    print("Using golden JSON at" + goldenJSON)
 else:
     goldenJSON = None
 
@@ -88,6 +90,7 @@ if(args.storeVariables):
 # we'll do histograms for two versions: only the cuts applied in the selection above, and an additional m(SD) cut
 # we won't create efficiencies here as these need to be created for all jobs combined
 # binning areset to some fixed value, defined within the core function
+# also, we'll define "pure" histograms, that store only events that a trigger has exclusively triggered when comparing to all others
 
 # create and open root file
 with uproot.recreate("output.root") as fout:
@@ -101,6 +104,20 @@ with uproot.recreate("output.root") as fout:
         for trigger in masks:
             fout[name.replace(" ", "_") + "__" + trigger] = np.histogram(value[masks[trigger]].to_numpy(), bins = binning)
     
+        # now lets do the same but as a "pure" efficiency
+        for trigger in masks:
+
+            other_masks = []
+
+            for other_trigger in masks:
+                if not trigger == other_trigger:
+                    other_masks.append( masks[other_trigger].to_numpy().reshape(len(masks[other_trigger]), 1) )
+
+            other_masks_concat = np.concatenate( other_masks, axis=1)
+            total_not_others = np.logical_not( np.any(other_masks_concat, axis=-1) )
+            total_mask = np.logical_and( masks[trigger], total_not_others  )
+
+            fout[name.replace(" ", "_") + "__" + trigger + "__pure"] = np.histogram(value.to_numpy()[total_mask], bins = binning)
 
     # now lets do the same for the mSD > 35 situation
     try: 

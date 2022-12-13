@@ -4,7 +4,9 @@ from scipy.stats import beta
 import matplotlib
 import matplotlib.pyplot as plt
 import mplhep as hep
-plt.style.use(hep.style.ROOT)
+import hist
+import boost_histogram as bh
+plt.style.use(hep.style.CMS)
 
 def binom_int(num, den, confint=0.68):
     quant = (1 - confint)/ 2.
@@ -12,17 +14,17 @@ def binom_int(num, den, confint=0.68):
     high = beta.ppf(1 - quant, num + 1, den - num)
     return (np.nan_to_num(low), np.where(np.isnan(high), 1, high))
 
-def plotHistogram(hist, label=None, ax=None):
-
-    hist_data, hist_bins = hist.to_numpy()
-    hep.histplot(hist_data, hist_bins, ax=ax, label=label)
-
 def plotEfficiency(hist_before, hist_after, label=None, ax=None):
 
     np.seterr(invalid='ignore')
     
-    hist_data_before, hist_bins = hist_before.to_numpy()
-    hist_data_after, hist_bins = hist_after.to_numpy()
+    # first, transforming to "hist" class for potential rebinning...
+    hist_hist_before = hist_before.to_hist()
+    hist_hist_after = hist_after.to_hist()
+
+    # then transforming to nunmpy for plotting
+    hist_data_before, hist_bins = hist_hist_before.to_numpy()
+    hist_data_after, hist_bins = hist_hist_after.to_numpy()
 
     # calculating efficiency
     efficiency = np.nan_to_num(hist_data_after/hist_data_before)

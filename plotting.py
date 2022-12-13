@@ -5,6 +5,7 @@ from plotting_helpers import *
 # -i expects one or more root files
 # -o defined which kind of plots are created, and sets any other option needed for these
 #    options are: oneTrigger, oneFile
+#    additional options are: mSD35, pure
 # -t triggers defines which triggers are plotted (requires one or more)
 # -v variables to be plotted (one or more)
 
@@ -20,6 +21,9 @@ args = parser.parse_args()
 # getting potential mSD prefix from options
 if "mSD35" in args.options: prefix = "mSD35__"
 else: prefix = ""
+
+if "pure" in args.options: postfix = "__pure"
+else: postfix = ""
 
 if "oneTrigger" in args.options:
 
@@ -41,21 +45,24 @@ if "oneTrigger" in args.options:
                     path_parts = len(label.split("/"))
                     if( path_parts > 1 ): label = label.split("/")[path_parts-1]
 
-                    plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger], label=label, ax=ax)
+                    plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=label, ax=ax)
 
                     plt.ylabel("efficiency")
                     plt.xlabel(variable)
                     plt.legend()
 
                     # add some text explaining the cuts
-                    text_in_plot = r"$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
+                    text_in_plot = r"$\bf{" + trigger.replace("_", "\_") + "}$"
+                    text_in_plot += "\n$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
                     if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
                     plt.text(ax.get_xlim()[1]*0.45, 0.2, text_in_plot, fontsize=18)
 
-                    fig.savefig(trigger + "__effi__" + prefix + variable + ".png", format="png")
+                    fig.savefig(trigger + postfix + "__effi__" + prefix + variable + ".png", format="png")
 
 
-elif "oneFile" in  args.options:
+elif "oneFile" in args.options:
+
+    print("Creating plots for a single file.")
 
     for file in args.input:
 
@@ -65,7 +72,7 @@ elif "oneFile" in  args.options:
 
                 fig, ax = plt.subplots()
 
-                for trigger in args.triggers: plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger], label=trigger, ax=ax)
+                for trigger in args.triggers: plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=trigger, ax=ax)
 
                 plt.ylabel("efficiency")
                 plt.xlabel(variable)
@@ -81,4 +88,4 @@ elif "oneFile" in  args.options:
                 path_parts = len(label.split("/"))
                 if( path_parts > 1 ): label = label.split("/")[path_parts-1]
 
-                fig.savefig(label + "__effi__" + prefix + variable + ".png", format="png")
+                fig.savefig(label + postfix + "__effi__" + prefix + variable + ".png", format="png")

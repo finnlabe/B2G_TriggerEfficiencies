@@ -21,15 +21,18 @@ args = parser.parse_args()
 with open(args.output, "w") as outfile:
 
     outfile.write( 'executable = condor.sh' + '\n' )
-    outfile.write( 'arguments = filelist_$(Process).txt refTriggers.txt testTriggers.txt ' + args.era + ' $(Process) ' )
+    outfile.write( 'arguments = "filelist_$(Process).txt refTriggers.txt testTriggers.txt ' + args.era + ' $(Process) ' )
 
     additional_options = ""
     if(args.doJECs): additional_options += " --doJECs"
     if(args.useGoldenJSON): additional_options += " --useGoldenJSON"
     if(args.storeVariables): additional_options += " --storeVariables"
-    if(additional_options == ""): additional_options = "none"
+    if(additional_options == ""):
+        additional_options = "none"
+    else:
+        additional_options = "'" + additional_options + "'"
 
-    outfile.write( additional_options + ' \n' )
+    outfile.write( additional_options + '"\n' )
 
     outfile.write( 'output = log/B2G_' + args.era + '_triggereff.$(Process).out' + '\n' )
     outfile.write( 'error = log/B2G_' + args.era + '_triggereff.$(Process).out' + '\n' )

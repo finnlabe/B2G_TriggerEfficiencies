@@ -53,8 +53,9 @@ def getJECcorrectionpath(era, force = False):
     
     # TODO make these relative
     JECoptions = {
-        "22RunC": "data/corrections/22RunC/",
-        "22RunD": "data/corrections/22RunD/",
+        "18RunD": "data/corrections/jets_18RunD/",
+        "22RunC": "data/corrections/jets_22RunC/",
+        "22RunD": "data/corrections/jets_22RunD/",
     }
     
     if era in JECoptions:

@@ -104,6 +104,14 @@ with uproot.recreate("output.root") as fout:
         for trigger in masks:
             fout[name.replace(" ", "_") + "__" + trigger] = np.histogram(value[masks[trigger]].to_numpy(), bins = binning)
     
+        # lets also do a "total efficiency" for all considered triggers
+        all_masks = []
+        for trigger in masks:
+            all_masks.append( masks[trigger].to_numpy().reshape(len(masks[trigger]), 1) )
+        all_masks_concat = np.concatenate( all_masks, axis=1)
+        all_masks_combined = np.any(all_masks_concat, axis=-1)
+        fout[name.replace(" ", "_") + "__total"] = np.histogram(value.to_numpy()[all_masks_combined], bins = binning)
+
         # now lets do the same but as a "pure" efficiency
         for trigger in masks:
 
@@ -137,6 +145,12 @@ with uproot.recreate("output.root") as fout:
                 total_mask = np.all(total_mask, axis=1)
 
                 fout["mSD35__" + name.replace(" ", "_") + "__" + trigger] = np.histogram(value.to_numpy()[total_mask], bins = binning)
+    
+            # the "all masks combined" from above is still valid here
+            # we just need to OR with the mSD35
+            all_masks_combined_mSD35 = np.logical_and(all_masks_combined, mSD_mask)
+            fout["mSD35__" + name.replace(" ", "_") + "__total"] = np.histogram(value.to_numpy()[all_masks_combined_mSD35], bins = binning)
+
     except ValueError as error:
         print(error)
         print("Not doing mSD > 35 plots, as no mSD variable found.")

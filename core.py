@@ -172,22 +172,26 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     
     # AK8 jet HT
     AK8_HT = ak.sum( events.FatJet.pt, axis=1)
+
+    # pile up
+    nPV = events.PV.npvs
     
     
     #####################
     ####  Returning  ####
     #####################
     
-    names = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT"]
+    names = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT", "nPV"]
     
     binning = [
         [edge for edge in np.arange(0, 700, 25)] + [edge for edge in np.arange(700, 1000, 100)] + [edge for edge in np.arange(1000, 1750, 250)],
         [edge for edge in np.arange(-4, 4, 0.25)],
         [edge for edge in np.arange(0, 600, 25)],
         [edge for edge in np.arange(0, 3000, 100)],
+        [edge for edge in np.arange(0, 40, 10)] + [edge for edge in np.arange(40, 75, 5)] + [100],
     ]
 
-    values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT]
+    values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT, nPV]
     
 
     # we'll just output data so histogramming and efficiency calculation can be made offline

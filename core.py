@@ -135,7 +135,7 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     
     # leading jet is required to have > 200 GeV and abs(eta) < 2.4
     jet_cut_pt_mask = ( ak.fill_none(leading_AK8_pt, -1) > 200 ).to_numpy()
-    jet_cut_eta_mask = ( abs( ak.fill_none(leading_AK8_eta, 99999) ) < 1.44 ).to_numpy()
+    jet_cut_eta_mask = ( abs( ak.fill_none(leading_AK8_eta, 99999) ) < 2.4 ).to_numpy()
 
     # we need muon variables to ensure a muon cut > 30 GeV
     leading_mu_pt = ak.pad_none( events.Muon.pt, 1, axis=1)[:,0]

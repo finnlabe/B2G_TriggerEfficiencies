@@ -47,17 +47,17 @@ if "oneTrigger" in args.options:
 
                     plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=label, ax=ax)
 
-                    plt.ylabel("efficiency")
-                    plt.xlabel(variable)
-                    plt.legend()
+            plt.ylabel("efficiency")
+            plt.xlabel(variable)
+            plt.legend()
 
-                    # add some text explaining the cuts
-                    text_in_plot = r"$\bf{" + trigger.replace("_", "\_") + "}$"
-                    text_in_plot += "\n$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
-                    if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
-                    plt.text(ax.get_xlim()[1]*0.45, 0.2, text_in_plot, fontsize=18)
+            # add some text explaining the cuts
+            text_in_plot = r"$\bf{" + trigger.replace("_", "\_") + "}$"
+            text_in_plot += "\n$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
+            if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
+            plt.text(ax.get_xlim()[1]*0.45, 0.2, text_in_plot, fontsize=18)
 
-                    fig.savefig(trigger + postfix + "__effi__" + prefix + variable + ".png", format="png")
+            fig.savefig(trigger + postfix + "__effi__" + prefix + variable + ".png", format="png")
 
 
 elif "oneFile" in args.options:

@@ -79,7 +79,7 @@ When the jobs have run through, you'll have several files named `output_*.root` 
 `hadd output_total.root output_*.root`.
 
 ### Plotting
-To plot the results of the efficiency calculation code, the `plotting.py` script can be used. This expects several input parameters:
+To plot the results of the efficiency calculation code, the `plotEfficiencies.py` and `plotDistributions.py` scripts can be used. These expect several input parameters:
 
  - -i or --input: the root file(s) to use for plotting
  - -o or --options: the plotting option(s), see below for more details
@@ -92,6 +92,7 @@ Each of these parameters can be any number of strings / files. The behavior of t
 - oneFile: each plot will contain one file, but multiple triggers. Useful to compare triggers within an era / year.
 
 Additional options can also be passed as strings following the -o flag. At the moment, only one is implemented: `mSD35` created plots with the SD mass cut at 35 applied. Further options might be added here later.
+Please check in-file comments for more instructions.
 
 ## Corrections / goldenJSON
 Jet energy corrections are applied according to the files in the `data` directory, based on the files obtained from the [JERC group recommendations](https://cms-jerc.web.cern.ch/Recommendations/). In case new ones need to be added, these can be added to the `data/corrections` directory. There, a helper script ([ConvertCorrectionFiles.py](https://github.com/finnlabe/B2G_TriggerEfficiencies/blob/master/data/corrections/ConvertCorrectionFiles.py "ConvertCorrectionFiles.py")) is given to obtain the correct file naming.

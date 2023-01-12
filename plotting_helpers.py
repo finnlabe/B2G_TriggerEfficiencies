@@ -14,6 +14,7 @@ def binom_int(num, den, confint=0.68):
     high = beta.ppf(1 - quant, num + 1, den - num)
     return (np.nan_to_num(low), np.where(np.isnan(high), 1, high))
 
+
 def plotEfficiency(hist_before, hist_after, label=None, ax=None):
 
     np.seterr(invalid='ignore')
@@ -42,3 +43,15 @@ def plotEfficiency(hist_before, hist_after, label=None, ax=None):
     error = np.concatenate((error_low.reshape(error_low.shape[0], 1), error_high.reshape(error_high.shape[0], 1)), axis=1)
     
     hep.histplot(efficiency, hist_bins, yerr=error.T, label=label, ax=ax)
+
+
+def plotDistribution(hist, label=None, ax=None):
+
+    # first, transforming to "hist" class for potential rebinning...
+    hist_hist = hist.to_hist()
+
+    # then transforming to nunmpy for plotting
+    hist_data, hist_bins = hist_hist.to_numpy()
+
+    # drawing
+    hep.histplot(hist_data, hist_bins, label=label, ax=ax)

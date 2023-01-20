@@ -22,31 +22,27 @@ Ninputfiles = len(returnlist)
 print("Found "+str(Ninputfiles)+" input files.")
 print("Splitting into "+str(njobs)+" jobs...")
 
-if(Ninputfiles % njobs == 0): files_per_job = int(Ninputfiles/njobs)
-else: files_per_job = int(Ninputfiles/njobs+1)
+files_per_job = int(Ninputfiles/njobs)
 
-print("This is "+str(files_per_job)+" maximum files per job.")
+if(Ninputfiles % njobs == 0): print("This is "+str(files_per_job)+" maximum files per job.")
+else: print("This is "+str(files_per_job+1)+" maximum files per job.")
+
 
 resultlist = []
 
-for jobindex in range(njobs-1):
-    
+for jobindex in range(njobs):
+        
+    files_for_this_job = files_per_job
+    if(jobindex < Ninputfiles % njobs): files_for_this_job += 1
+
     result = ''
-    
-    for i in range(files_per_job):
+
+    for i in range(files_for_this_job):
+        
         result += returnlist[jobindex*files_per_job + i]
         result += '\n'
                 
     resultlist.append(result)
-    
-# last missing few files here
-result = ''
-    
-for j in range( (njobs-1) * files_per_job, Ninputfiles ):
-    result += returnlist[j]
-    result += '\n'
-            
-resultlist.append(result)
 
 # writing to file
 resultindex = 0

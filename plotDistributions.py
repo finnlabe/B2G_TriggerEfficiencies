@@ -49,7 +49,7 @@ if "oneTrigger" in args.options:
                     plotDistribution(f_in[prefix + variable + "__" + trigger], label=label, ax=ax)
 
             plt.ylabel("events")
-            plt.xlabel(variable)
+            plt.xlabel(style_label_automatically(variable))
             plt.legend()
 
             # add some text explaining the cuts
@@ -76,7 +76,7 @@ elif "oneFile" in args.options:
                 for trigger in args.triggers: plotDistribution(f_in[prefix + variable + "__" + trigger], label=trigger, ax=ax)
 
                 plt.ylabel("events")
-                plt.xlabel(variable)
+                plt.xlabel(style_label_automatically(variable))
                 plt.legend()
 
                 # add some text explaining the cuts

@@ -7,12 +7,41 @@ import mplhep as hep
 import hist
 import boost_histogram as bh
 plt.style.use(hep.style.CMS)
+plt.rcParams['text.usetex'] = True
 
 def binom_int(num, den, confint=0.68):
     quant = (1 - confint)/ 2.
     low = beta.ppf(quant, num, den - num + 1)
     high = beta.ppf(1 - quant, num + 1, den - num)
     return (np.nan_to_num(low), np.where(np.isnan(high), 1, high))
+
+def style_label_automatically(label):
+
+    # this method will use the implemented variable names and automatically return some proper latex x-axis
+    # everything that is not understood will be just passed through unchanged
+
+    object = ""
+    variable = ""
+    index = ""
+
+    # known variables
+    if "pt" in label: variable = "p_{T}"
+    elif "eta" in label: variable = "\eta"
+    elif "mSD" in label: variable = "m_{SD}"
+    elif "nPV" in label: variable = "N(PV)"
+
+    if "leading" in label: index = "_{0}"
+
+    if "AK4" in label: object = "\mathrm{jet}^{AK4}"
+    if "AK8" in label: object = "\mathrm{jet}^{AK8}"
+
+    if not (object == "" and variable == "" and index == ""):
+        returnstring = "$" + variable
+        if object:
+            returnstring += "(" + object + index + ")"
+        return returnstring + "$"
+    else: return label
+
 
 
 def plotEfficiency(hist_before, hist_after, label=None, ax=None):

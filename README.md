@@ -13,6 +13,7 @@ The python code used in this framework requires a few packages (and their depend
 - coffea
 - awkward
 - numpy
+- mplhep
 
 Additionally, the `xrootd` package is required if files from the GRID are to be used.
 

@@ -15,6 +15,7 @@ parser.add_argument('-i', '--input', required=True, nargs='+')
 parser.add_argument('-o', '--options', required=True, nargs='+')
 parser.add_argument('-t', '--triggers', required=True, nargs='+')
 parser.add_argument('-v', '--variables', required=True, nargs='+')
+parser.add_argument('-o', '--outputFolder', default="plots") # we have a default directory here!
 
 args = parser.parse_args()
 
@@ -26,11 +27,15 @@ else: prefix = ""
 triggers_to_plot = args.triggers
 triggers_to_plot.append("before")
 
+plotCount = 0
+
 if "oneTrigger" in args.options:
 
-    print("Creating plots for a single trigger.")
+    print("Creating distribution plots with single trigger setting.")
 
     for trigger in triggers_to_plot:
+
+        print("Plotting trigger " + trigger)
 
         # onen plot per variavble
         for variable in args.variables:
@@ -38,6 +43,8 @@ if "oneTrigger" in args.options:
             fig, ax = plt.subplots()
 
             for file in args.input:
+
+                print("Plotting file " + file)
 
                 with uproot.open(file) as f_in:
 
@@ -58,14 +65,17 @@ if "oneTrigger" in args.options:
             if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
             plt.text(ax.get_xlim()[1]*0.45, ax.get_ylim()[1]*0.2, text_in_plot, fontsize=18)
 
-            fig.savefig(trigger + "__dist__" + prefix + variable + ".png", format="png")
+            fig.savefig(args.outputFolder + "/" + trigger + "__dist__" + prefix + variable + ".png", format="png")
+            plotCount += 1
 
 
 elif "oneFile" in args.options:
 
-    print("Creating plots for a single file.")
+    print("Creating distribution plots with single file setting.")
 
     for file in args.input:
+
+        print("Plotting file " + file)
 
         with uproot.open(file) as f_in:
 
@@ -73,7 +83,9 @@ elif "oneFile" in args.options:
 
                 fig, ax = plt.subplots()
 
-                for trigger in args.triggers: plotDistribution(f_in[prefix + variable + "__" + trigger], label=trigger, ax=ax)
+                for trigger in args.triggers:
+                    print("Plotting trigger " + trigger)
+                    plotDistribution(f_in[prefix + variable + "__" + trigger], label=trigger, ax=ax)
 
                 plt.ylabel("events")
                 plt.xlabel(style_label_automatically(variable))
@@ -89,4 +101,8 @@ elif "oneFile" in args.options:
                 path_parts = len(label.split("/"))
                 if( path_parts > 1 ): label = label.split("/")[path_parts-1]
 
-                fig.savefig(label + "__dist__" + prefix + variable + ".png", format="png")
+                fig.savefig(args.outputFolder + "/" + label + "__dist__" + prefix + variable + ".png", format="png")
+                plotCount += 1
+
+print("Done plotting!")
+print("Created " + str(plotCount) + " plots in " + args.outputFolder + "/.")

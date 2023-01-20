@@ -15,6 +15,7 @@ parser.add_argument('-i', '--input', required=True, nargs='+')
 parser.add_argument('-o', '--options', required=True, nargs='+')
 parser.add_argument('-t', '--triggers', required=True, nargs='+')
 parser.add_argument('-v', '--variables', required=True, nargs='+')
+parser.add_argument('--outputFolder', default="plots") # we have a default directory here!
 
 args = parser.parse_args()
 
@@ -25,11 +26,17 @@ else: prefix = ""
 if "pure" in args.options: postfix = "__pure"
 else: postfix = ""
 
+plotCount = 0
+
+# defining a plot output folder
+
 if "oneTrigger" in args.options:
 
-    print("Creating plots for a single trigger.")
+    print("Creating efficiency plots with single trigger setting.")
 
     for trigger in args.triggers:
+
+        print("Plotting trigger " + trigger)
 
         # onen plot per variavble
         for variable in args.variables:
@@ -37,6 +44,8 @@ if "oneTrigger" in args.options:
             fig, ax = plt.subplots()
 
             for file in args.input:
+
+                print("Plotting file " + file)
 
                 with uproot.open(file) as f_in:
 
@@ -57,7 +66,8 @@ if "oneTrigger" in args.options:
             if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
             plt.text(ax.get_xlim()[1]*0.45, 0.2, text_in_plot, fontsize=18)
 
-            fig.savefig(trigger + postfix + "__effi__" + prefix + variable + ".png", format="png")
+            fig.savefig(args.outputFolder + "/" + trigger + postfix + "__effi__" + prefix + variable + ".png", format="png")
+            plotCount += 1
 
 
 elif "oneFile" in args.options:
@@ -66,13 +76,17 @@ elif "oneFile" in args.options:
 
     for file in args.input:
 
+        print("Plotting file " + file)
+
         with uproot.open(file) as f_in:
 
             for variable in args.variables:
 
                 fig, ax = plt.subplots()
 
-                for trigger in args.triggers: plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=trigger, ax=ax)
+                for trigger in args.triggers:
+                    print("Plotting trigger " + trigger)
+                    plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=trigger, ax=ax)
 
                 plt.ylabel("efficiency")
                 plt.xlabel(style_label_automatically(variable))
@@ -88,4 +102,8 @@ elif "oneFile" in args.options:
                 path_parts = len(label.split("/"))
                 if( path_parts > 1 ): label = label.split("/")[path_parts-1]
 
-                fig.savefig(label + postfix + "__effi__" + prefix + variable + ".png", format="png")
+                fig.savefig(args.outputFolder + "/" + label + postfix + "__effi__" + prefix + variable + ".png", format="png")
+                plotCount += 1
+
+print("Done plotting!")
+print("Created " + str(plotCount) + " plots in " + args.outputFolder + "/.")

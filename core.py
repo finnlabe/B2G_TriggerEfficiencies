@@ -18,11 +18,6 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     #########################
 
     # as xrootd connections are often rather unstable, there are several different tricks here to try and address that
-
-    # the european redirector often is super unstable, therefore the US one is used instead
-    # ideally, we'll try both, but that is an optimization for later
-    if "xrootd-cms.infn.it" in inputfile: print("Attention: as xrootd-cms.infn.it was very unstable, cmsxrootd.fnal.gov will be used instead")
-
     try:
         # first, lets try to stream the file
         events = NanoEventsFactory.from_root(
@@ -115,10 +110,6 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     ####  Collection cleaning  ####
     ###############################
 
-    #Muon_mask = ak.all(  ak.concatenate((events.Muon.pt > 30, events.Muon.tightId), axis=1) , axis=1, keepdims=True)
-    #selected_Muons = events.Muon[ Muon_mask ]
-    #events.Muon = selected_Muons
-
     # jet ID selection
     FatJet_mask = events.FatJet.isTightLeptonVeto
     selected_FatJets = events.FatJet[ FatJet_mask ]
@@ -192,7 +183,6 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     ]
 
     values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT, nPV]
-    
 
     # we'll just output data so histogramming and efficiency calculation can be made offline
     return names, binning, values, trigger_masks
@@ -234,7 +224,6 @@ def run_multiple_files(inputfiles, refTriggers, testTriggers, goldenJSON=None, J
     # I am sure there is a nicer way for this, might revisit in the future
     final_values = []
     for i in range(len(names)):
-        print("Combining " + names[i] + ".")
         
         temp_values = []
         for file_values in all_values:
@@ -246,7 +235,6 @@ def run_multiple_files(inputfiles, refTriggers, testTriggers, goldenJSON=None, J
     # similar thing for trigger masks
     final_masks = {}
     for trigger in testTriggers:
-        print("Combining " + trigger + " results.")
         
         temp_masks = []
         for file_masks in all_masks:

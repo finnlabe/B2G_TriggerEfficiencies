@@ -51,18 +51,44 @@ with open(args.refTriggers) as file: refTriggers = [line.rstrip() for line in fi
 with open(args.testTriggers) as file: testTriggers = [line.rstrip() for line in file]
 
 # fetching of correct JEC folder
-if args.doJECs:
-    JECcorrectionpath = getJECcorrectionpath(args.era)
-    print("Using JECs at " + JECcorrectionpath)
-else:
-    JECcorrectionpath = None
+if args.doJECs: JECcorrectionpath = getJECcorrectionpath(args.era)
+else: JECcorrectionpath = None
 
 # fetching of correct golden JSON file
-if args.useGoldenJSON:
-    goldenJSON = getGoldenJSON(args.era)
-    print("Using golden JSON at " + goldenJSON)
-else:
-    goldenJSON = None
+if args.useGoldenJSON: goldenJSON = getGoldenJSON(args.era)
+else: goldenJSON = None
+
+# some console print with infos on the job
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
+
+print("")
+prGreen("###########################################################################")
+print("")
+prGreen("Creating histograms for efficiency calculation with the following settings:")
+
+prGreen(" - era: " + args.era)
+
+refTriggers_string = ""
+for trigger in refTriggers:
+    refTriggers_string += trigger + ", "
+prGreen(" - reference triggers: " + refTriggers_string[:-2])
+
+testTriggers_string = ""
+for trigger in testTriggers:
+    testTriggers_string += trigger + ", "
+prGreen(" - triggers to measure: " + testTriggers_string[:-2])
+
+if args.doJECs: prGreen(" - re-applying JECs from " + JECcorrectionpath)
+else: prGreen(" - using JECs from NanoAOD")
+
+if args.useGoldenJSON: prGreen(" - applying goldenJSON selection using " + goldenJSON)
+else: prGreen(" - no goldenJSON applied")
+
+print("")
+prGreen("###########################################################################")
+print("")
+
+print("Starting to loop over input files...")
 
 # run the core part of the core for multiple files
 names, binnings, values, masks = run_multiple_files(inputfiles,

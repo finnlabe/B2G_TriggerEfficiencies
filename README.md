@@ -69,7 +69,7 @@ Finally, you most likely want to split this list of input files in multiple jobs
 
 where in this example, we'll create 10 condor jobs. Now, all input files are ready, we need to create a submit file for the condor jobs.
 
-The script [create_submit_file.py](https://github.com/finnlabe/B2G_TriggerEfficiencies/blob/master/create_submit_file.py) can do that automatically, given a input folder (in exactly the structure as the example/condor one in this repository), the era of the input files (only one, do not combine files from different eras in one condor job!) and the output file name of the submitfile (for example `condor.sub`). You can also add options like `--useGoldenJSON` or `--doJECs` (this might be replaced by a config file later).
+The script [create_submit_file.py](https://github.com/finnlabe/B2G_TriggerEfficiencies/blob/master/scripts/create_submit_file.py) can do that automatically, given a input folder (in exactly the structure as the example/condor one in this repository), the era of the input files (only one, do not combine files from different eras in one condor job!) and the output file name of the submitfile (for example `condor.sub`). You can also add options like `--useGoldenJSON` or `--doJECs` (this might be replaced by a config file later).
 
 Then, create a `log` directory to store job logs, and run your jobs using
 

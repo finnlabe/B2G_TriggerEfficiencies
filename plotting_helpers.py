@@ -7,7 +7,6 @@ import mplhep as hep
 import hist
 import boost_histogram as bh
 plt.style.use(hep.style.CMS)
-plt.rcParams['text.usetex'] = True
 
 def binom_int(num, den, confint=0.68):
     quant = (1 - confint)/ 2.

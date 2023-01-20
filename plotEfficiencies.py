@@ -57,7 +57,7 @@ if "oneTrigger" in args.options:
                     plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=label, ax=ax)
 
             plt.ylabel("efficiency")
-            plt.xlabel(style_label_automatically(variable))
+            plt.xlabel(style_label_automatically(variable), usetex=True)
             plt.legend()
 
             # add some text explaining the cuts
@@ -89,7 +89,7 @@ elif "oneFile" in args.options:
                     plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=trigger, ax=ax)
 
                 plt.ylabel("efficiency")
-                plt.xlabel(style_label_automatically(variable))
+                plt.xlabel(style_label_automatically(variable), usetex=True)
                 plt.legend()
 
                 # add some text explaining the cuts

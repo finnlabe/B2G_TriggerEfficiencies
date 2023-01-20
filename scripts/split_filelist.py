@@ -22,7 +22,8 @@ Ninputfiles = len(returnlist)
 print("Found "+str(Ninputfiles)+" input files.")
 print("Splitting into "+str(njobs)+" jobs...")
 
-files_per_job = int(Ninputfiles/njobs-1)
+if(Ninputfiles % njobs == 0): files_per_job = int(Ninputfiles/njobs)
+else: files_per_job = int(Ninputfiles/njobs+1)
 
 print("This is "+str(files_per_job)+" maximum files per job.")
 

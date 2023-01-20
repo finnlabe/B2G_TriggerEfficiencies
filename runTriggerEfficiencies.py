@@ -35,6 +35,7 @@ parser.add_argument('-i', '--input', required=True)
 parser.add_argument('-r', '--refTriggers', required=True)
 parser.add_argument('-t', '--testTriggers', required=True)
 parser.add_argument('-e', '--era', required=True)
+parser.add_argument('--outputFolder', default=".") # we have no default directory here!
 
 parser.add_argument('--doJECs', action='store_true')
 parser.add_argument('--useGoldenJSON', action='store_true')
@@ -119,7 +120,7 @@ if(args.storeVariables):
 # also, we'll define "pure" histograms, that store only events that a trigger has exclusively triggered when comparing to all others
 
 # create and open root file
-with uproot.recreate("output.root") as fout:
+with uproot.recreate(args.outputFolder + "/" + "output.root") as fout:
 
     for name, binning, value in zip(names, binnings, values):
 

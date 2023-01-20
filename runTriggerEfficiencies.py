@@ -53,14 +53,14 @@ with open(args.testTriggers) as file: testTriggers = [line.rstrip() for line in 
 # fetching of correct JEC folder
 if args.doJECs:
     JECcorrectionpath = getJECcorrectionpath(args.era)
-    print("Using JECs at" + JECcorrectionpath)
+    print("Using JECs at " + JECcorrectionpath)
 else:
     JECcorrectionpath = None
 
 # fetching of correct golden JSON file
 if args.useGoldenJSON:
     goldenJSON = getGoldenJSON(args.era)
-    print("Using golden JSON at" + goldenJSON)
+    print("Using golden JSON at " + goldenJSON)
 else:
     goldenJSON = None
 

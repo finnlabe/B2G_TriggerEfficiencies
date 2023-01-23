@@ -9,6 +9,11 @@ inputfile = str(sys.argv[1])
 njobs = int(sys.argv[2])
 outputfolder = str(sys.argv[3])
 
+# checking if output folder exists, if not, its created
+if not os.path.exists(outputfolder):
+    print("Creating output directory...")
+    os.makedirs(outputfolder)
+
 file = open(inputfile, "r")
 content_list = file.readlines()
 file.close()

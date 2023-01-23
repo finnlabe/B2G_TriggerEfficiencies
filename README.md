@@ -57,7 +57,7 @@ To run the trigger efficiencies on more files, the HTCondor batch system is used
 
 First, prepare the required input files: two text files with reference and test triggers (as explained above), and the input file list. If the input sample is on DAS, this can be done automatically, for example using
 
-`./createFileList.sh "/Muon/Run2022C-PromptNanoAODv10_v1-v1/NANOAOD" example/condor/filelist.txt`
+`./createFileList.sh "/Muon/Run2022F-PromptNanoAODv10_v1-v2/NANOAOD" example/condor/filelist.txt`
 
 which will produce a single file with all input files corresponding to the passed DAS query. Note that no redirector is added yet, this can be done using
 

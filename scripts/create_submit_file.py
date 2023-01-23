@@ -36,11 +36,11 @@ with open(args.submitFile, "w") as outfile:
     outfile.write( '+JobFlavour = "espresso"' + '\n' )
     outfile.write( 'use_x509userproxy = true' + '\n' )
     outfile.write( 'x509userproxy = ' + os.path.expanduser('~') + '/x509up_u103872' + '\n' )
-    outfile.write( 'transfer_input_files = ' + path_home + '/runTriggerEfficiencies.py, ' + path_home + '/helpers.py, ' + path_home + '/core.py, ' + path_home + '/data, ' + path_workdir + '/file_lists/filelist_$(Process).txt, ' + path_workdir + '/refTriggers.txt, ' + path_workdir + '/testTriggers.txt' + '\n' )
+    outfile.write( 'transfer_input_files = ' + path_home + '/runTriggerEfficiencies.py, ' + path_home + '/helpers.py, ' + path_home + '/core.py, ' + path_home + '/data, ' + path_workdir + '/split_file_list/filelist_$(Process).txt, ' + path_workdir + '/refTriggers.txt, ' + path_workdir + '/testTriggers.txt' + '\n' )
     outfile.write( 'transfer_output_files = output_' + args.era + '_$(Process).root' + '\n' )
     outfile.write( 'should_transfer_files = YES' + '\n' )
     outfile.write( 'when_to_transfer_output = ON_EXIT' + '\n' )
-    _, _, files = next(os.walk( path_workdir + '/file_lists/' ))
+    _, _, files = next(os.walk( path_workdir + '/split_file_list/' ))
     outfile.write( 'queue ' + str( len(files) ) + '\n' )
 
 print("Building the shell script that will be executed by condor...")

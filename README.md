@@ -65,7 +65,7 @@ which will produce a single file with all input files corresponding to the passe
 
 Finally, you most likely want to split this list of input files in multiple jobs. Create a directory where the split files should be located, and execute
 
-`python scripts/split_filelist.py example/condor/filelist.txt 10 example/condor/split_files/`
+`python scripts/split_filelist.py example/condor/filelist.txt 10 example/condor/split_file_list/`
 
 where in this example, we'll create 10 condor jobs. Now, all input files are ready, we need to create a submit file for the condor jobs.
 

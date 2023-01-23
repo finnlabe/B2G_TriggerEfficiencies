@@ -99,3 +99,4 @@ Please check in-file comments for more instructions.
 Jet energy corrections are applied according to the files in the `data` directory, based on the files obtained from the [JERC group recommendations](https://cms-jerc.web.cern.ch/Recommendations/). In case new ones need to be added, these can be added to the `data/corrections` directory. There, a helper script ([ConvertCorrectionFiles.py](https://github.com/finnlabe/B2G_TriggerEfficiencies/blob/master/data/corrections/ConvertCorrectionFiles.py "ConvertCorrectionFiles.py")) is given to obtain the correct file naming.
 
 The golden JSON selection is made based on the file in `data/goldenJSON`, where new ones can be added.
+The 2022 file currently located in that directory was taken from [here](https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions22/).

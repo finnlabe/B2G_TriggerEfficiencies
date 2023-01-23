@@ -27,7 +27,7 @@ and be able to run the module. This README will be updated once a working stable
 
 Finally, to use the GRID proxy inside condor jobs, it needs to be copied over to your home directory, like
 
-`cp /tmp/x509up_u103872 .`
+`cp /tmp/x509up_u${UID} .`
 
 This last step is not needed for local testing.
 

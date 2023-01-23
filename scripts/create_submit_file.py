@@ -9,6 +9,10 @@ parser.add_argument('-w', '--workdir', required=True)
 parser.add_argument('-e', '--era', required=True)
 parser.add_argument('-s', '--submitFile', default="condor.sub")
 
+# this is needed atm, I hope to make it irrelevant in the future
+# you can call this with --userID $UID to get the proper ID for you
+parser.add_argument('--userID', required=True)
+
 parser.add_argument('--doJECs', action='store_true')
 parser.add_argument('--useGoldenJSON', action='store_true')
 
@@ -35,7 +39,7 @@ with open(args.submitFile, "w") as outfile:
     outfile.write( 'log = log/totallog_' + args.era + '_triggereff.log' + '\n' )
     outfile.write( '+JobFlavour = "espresso"' + '\n' )
     outfile.write( 'use_x509userproxy = true' + '\n' )
-    outfile.write( 'x509userproxy = ' + os.path.expanduser('~') + '/x509up_u103872' + '\n' )
+    outfile.write( 'x509userproxy = ' + os.path.expanduser('~') + '/x509up_u' + args.userID + '\n' )
     outfile.write( 'transfer_input_files = ' + path_home + '/runTriggerEfficiencies.py, ' + path_home + '/helpers.py, ' + path_home + '/core.py, ' + path_home + '/data, ' + path_workdir + '/split_file_list/filelist_$(Process).txt, ' + path_workdir + '/refTriggers.txt, ' + path_workdir + '/testTriggers.txt' + '\n' )
     outfile.write( 'transfer_output_files = output_' + args.era + '_$(Process).root' + '\n' )
     outfile.write( 'should_transfer_files = YES' + '\n' )

@@ -15,7 +15,7 @@ parser.add_argument('-i', '--input', required=True, nargs='+')
 parser.add_argument('-o', '--options', required=True, nargs='+')
 parser.add_argument('-t', '--triggers', required=True, nargs='+')
 parser.add_argument('-v', '--variables', required=True, nargs='+')
-parser.add_argument('-o', '--outputFolder', default="plots") # we have a default directory here!
+parser.add_argument('--outputFolder', default="plots") # we have a default directory here!
 
 args = parser.parse_args()
 

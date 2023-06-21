@@ -157,7 +157,10 @@ with uproot.recreate(args.outputFolder + "/" + "output.root") as fout:
     # now lets do the same for the mSD > 35 situation
     try: 
         mSD_index = names.index("leading AK8 mSD")
+        mSD2_index = names.index("second AK8 mSD")
         mSD_mask = (values[mSD_index] > 35).to_numpy()
+        mSD_mask2 = (values[mSD2_index] > 35).to_numpy()
+        mSD_mask = np.logical_and(mSD_mask, mSD_mask2)
         for name, binning, value in zip(names, binnings, values):
 
             # create histogram and store it to a file

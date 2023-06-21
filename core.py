@@ -21,14 +21,14 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     try:
         # first, lets try to stream the file
         events = NanoEventsFactory.from_root(
-            inputfile.replace("xrootd-cms.infn.it", "cmsxrootd.fnal.gov"),
+            inputfile,
             schemaclass=NanoAODSchema,
         ).events()
     except OSError as error:
         # if streaming is not working, try copying over the entire file
         print(error)
         print("Trying with local copy")
-        os.system('xrdcp "'+inputfile.replace("xrootd-cms.infn.it", "cmsxrootd.fnal.gov")+'" input.root')
+        os.system('xrdcp "'+inputfile+'" input.root')
         try:
             events = NanoEventsFactory.from_root(
                 "input.root",
@@ -37,6 +37,7 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
         except OSError as error:
             # if that is also not working, just ignore the file
             print(error)
+            print("Local copy has also failed, ignoring this file!")
             os.system("rm input.root")
             return False, False, False, False
         os.system("rm input.root")
@@ -110,34 +111,51 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     ####  Collection cleaning  ####
     ###############################
 
+    # muon selection
+    Muon_mask = events.Muon.tightId
+    selected_Muons = events.Muon[ Muon_mask ]
+    events.Muon = selected_Muons
+
     # jet ID selection
     FatJet_mask = events.FatJet.isTightLeptonVeto
     selected_FatJets = events.FatJet[ FatJet_mask ]
     events.FatJet = selected_FatJets
 
-    
     #####################
     ####  Selection  ####
     #####################
     
     # calculate some variables for cuts
     leading_AK8_pt = ak.pad_none( events.FatJet.pt, 1, axis=1)[:,0]
+    second_AK8_pt = ak.pad_none( events.FatJet.pt, 2, axis=1)[:,1]
     leading_AK8_eta = ak.pad_none( events.FatJet.eta, 1, axis=1)[:,0]
+    second_AK8_eta = ak.pad_none( events.FatJet.eta, 2, axis=1)[:,1]
+    leading_AK8_mSD = ak.pad_none( events.FatJet.msoftdrop, 1, axis=1)[:,0]
+    second_AK8_mSD = ak.pad_none( events.FatJet.msoftdrop, 2, axis=1)[:,1]
     
     # leading jet is required to have > 200 GeV and abs(eta) < 2.4
-    jet_cut_pt_mask = ( ak.fill_none(leading_AK8_pt, -1) > 200 ).to_numpy()
+    jet_cut_pt_mask = ( ak.fill_none(leading_AK8_pt, -1) > 300 ).to_numpy()
     jet_cut_eta_mask = ( abs( ak.fill_none(leading_AK8_eta, 99999) ) < 2.4 ).to_numpy()
+    jet_cut_mass_mask = ( ak.fill_none(leading_AK8_mSD, -1) > 70 ).to_numpy()
+
+    # potentially also a second jet cut
+    second_jet_cut_pt_mask = ( ak.fill_none(second_AK8_pt, -1) > 250 ).to_numpy()
+    second_jet_cut_eta_mask = ( abs( ak.fill_none(second_AK8_eta, 99999) ) < 2.4 ).to_numpy()
+    second_jet_cut_mass_mask = ( ak.fill_none(second_AK8_mSD, -1) > 70 ).to_numpy()
 
     # we need muon variables to ensure a muon cut > 30 GeV
     leading_mu_pt = ak.pad_none( events.Muon.pt, 1, axis=1)[:,0]
     muon_cut_pt_mask = ( ak.fill_none(leading_mu_pt, -1) > 30 ).to_numpy()
     
     # combining all cut masks
-    selection_mask = np.logical_and.reduce((jet_cut_pt_mask, jet_cut_eta_mask, muon_cut_pt_mask))
+    selection_mask = np.logical_and.reduce((jet_cut_pt_mask, jet_cut_eta_mask, second_jet_cut_pt_mask, second_jet_cut_eta_mask, muon_cut_pt_mask, jet_cut_mass_mask, second_jet_cut_mass_mask))
     
+    print(selection_mask.shape)
+
     # applying the selection
     events = events[selection_mask]
-    
+    events.FatJet = selected_FatJets[selection_mask] # need to re-apply this for some reason...
+
     #########################
     ####  Test triggers  ####
     #########################
@@ -159,7 +177,10 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     # get pt, eta and mSD of the leading jet
     leading_AK8_pt = ak.pad_none( events.FatJet.pt, 1, axis=1)[:,0]
     leading_AK8_eta = ak.pad_none( events.FatJet.eta, 1, axis=1)[:,0]
+    second_AK8_pt = ak.pad_none( events.FatJet.pt, 2, axis=1)[:,1]
     leading_AK8_mSD = ak.pad_none( events.FatJet.msoftdrop, 1, axis=1)[:,0]
+    second_AK8_mSD = ak.pad_none( events.FatJet.msoftdrop, 2, axis=1)[:,1]
+    mjj = (events.FatJet[:,0] + events.FatJet[:,1]).mass
     
     # AK8 jet HT
     AK8_HT = ak.sum( events.FatJet.pt, axis=1)
@@ -167,22 +188,24 @@ def run_one_file(inputfile, refTriggers, testTriggers, goldenJSON=None, JECcorre
     # pile up
     nPV = events.PV.npvs
     
-    
     #####################
     ####  Returning  ####
     #####################
     
-    names = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT", "nPV"]
+    names = ["leading AK8 pt", "leading AK8 eta", "leading AK8 mSD", "AK8 HT", "nPV", "second AK8 pt", "second AK8 mSD", "mjj"]
     
     binning = [
         [edge for edge in np.arange(0, 700, 25)] + [edge for edge in np.arange(700, 1000, 100)] + [edge for edge in np.arange(1000, 1750, 250)],
         [edge for edge in np.arange(-4, 4, 0.25)],
         [edge for edge in np.arange(0, 600, 25)],
-        [edge for edge in np.arange(0, 3000, 100)],
+        [edge for edge in np.arange(0, 1500, 100)] + [edge for edge in np.arange(1500, 2000, 250)] + [edge for edge in np.arange(2000, 3500 , 500)],
         [edge for edge in np.arange(0, 40, 10)] + [edge for edge in np.arange(40, 75, 5)] + [100],
+        [edge for edge in np.arange(0, 700, 25)] + [edge for edge in np.arange(700, 1000, 100)] + [edge for edge in np.arange(1000, 1750, 250)],
+        [edge for edge in np.arange(0, 600, 25)],
+        [edge for edge in np.arange(0, 3000, 100)],
     ]
 
-    values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT, nPV]
+    values = [leading_AK8_pt, leading_AK8_eta, leading_AK8_mSD, AK8_HT, nPV, second_AK8_pt, second_AK8_mSD, mjj]
 
     # we'll just output data so histogramming and efficiency calculation can be made offline
     return names, binning, values, trigger_masks

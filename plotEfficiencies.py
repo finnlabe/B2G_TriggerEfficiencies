@@ -1,4 +1,5 @@
 import argparse
+import uproot
 from plotting_helpers import *
 
 # generic plotting function
@@ -27,6 +28,7 @@ if "pure" in args.options: postfix = "__pure"
 else: postfix = ""
 
 plotCount = 0
+lineCount = 0
 
 # defining a plot output folder
 
@@ -54,20 +56,27 @@ if "oneTrigger" in args.options:
                     path_parts = len(label.split("/"))
                     if( path_parts > 1 ): label = label.split("/")[path_parts-1]
 
-                    plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=label, ax=ax)
+                    plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=styleNamesAutomatically(label), ax=ax, color=getColor(lineCount))
+                    lineCount += 1
 
-            plt.ylabel("efficiency")
+            plt.ylabel("Efficiency")
             plt.xlabel(style_label_automatically(variable), usetex=True)
-            plt.legend()
+
+            plt.legend(loc = "lower right")
 
             # add some text explaining the cuts
             text_in_plot = r"$\bf{" + trigger.replace("_", "\_") + "}$"
-            text_in_plot += "\n$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
-            if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
+            text_in_plot += "\n$\mathrm{AK8}~p_{T} > 200~\mathrm{GeV}$"
+            if "mSD35" in prefix: text_in_plot += "\n$\mathrm{AK8}~m_{SD} > 35~\mathrm{GeV}$"
             plt.text(ax.get_xlim()[1]*0.45, 0.2, text_in_plot, fontsize=18)
 
+            plt.legend(loc = "lower right", title=styleNamesAutomatically(trigger), prop={'size': 16}, title_fontsize=20)
+            
+            drawLabel("yourlabelhere")
             fig.savefig(args.outputFolder + "/" + trigger + postfix + "__effi__" + prefix + variable + ".png", format="png")
+            fig.savefig(args.outputFolder + "/" + trigger + postfix + "__effi__" + prefix + variable + ".pdf", format="pdf")
             plotCount += 1
+            lineCount = 0
 
 
 elif "oneFile" in args.options:
@@ -86,15 +95,21 @@ elif "oneFile" in args.options:
 
                 for trigger in args.triggers:
                     print("Plotting trigger " + trigger)
-                    plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=trigger, ax=ax)
+                    color = getColor(lineCount)
+                    if trigger == "total": color = "black"
+                    plotEfficiency(f_in[prefix + variable + "__before"], f_in[prefix + variable + "__" + trigger + postfix], label=styleNamesAutomatically(trigger), ax=ax, color=color)
+                    lineCount += 1
 
-                plt.ylabel("efficiency")
+                plt.ylabel("Efficiency")
                 plt.xlabel(style_label_automatically(variable), usetex=True)
-                plt.legend()
+
+                if "eta" in variable: plt.legend(loc = "upper right")
+                elif "nPV" in variable: plt.legend(loc = "upper left")
+                else: plt.legend(loc = "lower right", prop={'size': 16})
 
                 # add some text explaining the cuts
-                text_in_plot = r"$\mathrm{leading~AK8}~p_{T} > 200~\mathrm{GeV}$"
-                if "mSD35" in prefix: text_in_plot += "\n$\mathrm{leading~AK8}~m_{SD} > 35~\mathrm{GeV}$"
+                text_in_plot = r"$\mathrm{AK8}~p_{T} > 200~\mathrm{GeV}$"
+                if "mSD35" in prefix: text_in_plot += "\n$\mathrm{AK8}~m_{SD} > 35~\mathrm{GeV}$"
                 plt.text(ax.get_xlim()[1]*0.45, 0.5, text_in_plot, fontsize=18)
 
                 # autodetermine label from file name
@@ -102,8 +117,11 @@ elif "oneFile" in args.options:
                 path_parts = len(label.split("/"))
                 if( path_parts > 1 ): label = label.split("/")[path_parts-1]
 
+                drawLabel(label)
                 fig.savefig(args.outputFolder + "/" + label + postfix + "__effi__" + prefix + variable + ".png", format="png")
+                fig.savefig(args.outputFolder + "/" + label + postfix + "__effi__" + prefix + variable + ".pdf", format="pdf")
                 plotCount += 1
+                lineCount = 0
 
 print("Done plotting!")
 print("Created " + str(plotCount) + " plots in " + args.outputFolder + "/.")

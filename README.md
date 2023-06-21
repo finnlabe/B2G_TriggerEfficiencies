@@ -23,13 +23,10 @@ If you want to execute the code on lxplus, a pre-existing environment can be use
 
 and be able to run the module. This README will be updated once a working stable release is available. The only other required environment setting then is to activate your GRID proxy (if files should be accessed using xrootd):
 
-`voms-proxy-init -voms cms -rfc`
-
-Finally, to use the GRID proxy inside condor jobs, it needs to be copied over to your home directory, like
-
-`cp /tmp/x509up_u${UID} .`
-
-This last step is not needed for local testing.
+```
+voms-proxy-init --voms cms -rfc --valid 168:00 -out $HOME/private/.proxy
+export X509_USER_PROXY=$HOME/private/.proxy
+```
 
 ## Usage
 
